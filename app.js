@@ -36,7 +36,7 @@ d3.csv("resources/data.csv", function(err, data) {
   // Step 2: Create scale functions
   // ==============================
   var xLinearScale = d3.scaleLinear()
-    .domain([20, d3.max(data, d => d.foreignBornPopulationEstimate)])
+    .domain([0, d3.max(data, d => d.foreignBornPopulationEstimate)])
     .range([0, width]);
 
   var yLinearScale = d3.scaleLinear()
@@ -66,19 +66,18 @@ d3.csv("resources/data.csv", function(err, data) {
   .attr("cx", d => xLinearScale(d.foreignBornPopulationEstimate))
   .attr("cy", d => yLinearScale(d.checkupNever))
   .attr("r", "15")
-  .attr("fill", "pink")
+  .attr("fill", "steelblue")
   .attr("opacity", ".5")
-  
+
+  // add state names to circles
   chartGroup.selectAll('text')
     .data(data)
     .enter()
     .append('text')
-    .attr("x", d => xLinearScale(d.foreignBornPopulationEstimate))
-    .attr("y", d => yLinearScale(d.checkupNever))
-    .attr("class", "text-muted")
+    .attr("x", d => xLinearScale(d.foreignBornPopulationEstimate)-9)
+    .attr("y", d => yLinearScale(d.checkupNever)+6)
+    .attr("class", "text-center")
     .text(function(d){return d.abbr});
-
-
 
   // Create axes labels
   chartGroup.append("text")
