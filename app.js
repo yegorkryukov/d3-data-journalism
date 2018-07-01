@@ -8,7 +8,7 @@ var margin = {
   top: 20,
   right: 40,
   bottom: 60,
-  left: 100
+  left: 20
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -47,13 +47,13 @@ function renderAxes(newXScale, xAxis) {
 
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circlesGroup, newXScale, chosenXaxis) {
+function renderCircles(circle, newXScale, chosenXaxis) {
 
-  circlesGroup.transition()
+  circle.transition()
     .duration(1000)
     .attr("cx", d => newXScale(d[chosenXaxis]));
 
-  return circlesGroup;
+  return circle;
 };
 
 // Retrieve data from the CSV file and execute everything below
@@ -79,9 +79,9 @@ d3.csv("resources/data.csv", function (err, data) {
     .domain([0, d3.max(data, d => d.checkupNever)])
     .range([height, 0]);
 
-   // Create initial axis functions
-   var bottomAxis = d3.axisBottom(xLinearScale);
-   var leftAxis = d3.axisLeft(yLinearScale);
+  // Create initial axis functions
+  var bottomAxis = d3.axisBottom(xLinearScale);
+  var leftAxis = d3.axisLeft(yLinearScale);
 
   // append x axis
   var xAxis = chartGroup.append("g")
@@ -94,25 +94,26 @@ d3.csv("resources/data.csv", function (err, data) {
     .call(leftAxis);
 
   // append initial circles
-  var circlesGroup = chartGroup.selectAll("circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", d => xLinearScale(d[chosenXAxis]))
-    .attr("cy", d => yLinearScale(d.checkupNever))
-    .attr("r", "15")
+  var circle = chartGroup.selectAll("g")
+      .data(data)
+    .enter().append("g")
+      .attr('transform', function(d, i) {
+        return "translate("
+          + xLinearScale(d[chosenXAxis])
+          + "," 
+          + yLinearScale(d.checkupNever)
+          + ")"
+      })
+      
+  circle.append("circle")
+    .attr("r", "16")
     .attr("fill", "steelblue")
-    .attr("opacity", ".5")
+    .attr("opacity", ".5");
 
-  // add state names to circles
-  chartGroup.selectAll('text')
-    .data(data)
-    .enter()
-    .append('text')
-    .attr("x", d => xLinearScale(d[chosenXAxis]) - 9)
-    .attr("y", d => yLinearScale(d.checkupNever) + 6)
-    .attr("class", "text-center")
-    .text(function (d) { return d.abbr });
+  circle.append("text")
+      .attr("dy", ".35em")
+      .attr("dx", "-12")
+      .text(function(d) { return d.abbr; });
 
   // Create group for  2 x- axis labels
   var labelsGroup = chartGroup.append("g")
@@ -143,7 +144,7 @@ d3.csv("resources/data.csv", function (err, data) {
 
   // x axis labels event listener
   labelsGroup.selectAll("text")
-    .on("click", function() {
+    .on("click", function () {
       // get value of selection
       var value = d3.select(this).attr("value");
       if (value != chosenXAxis) {
