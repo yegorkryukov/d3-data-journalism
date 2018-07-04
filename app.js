@@ -1,5 +1,6 @@
 // Initial Params
 var chosenXAxis = "foreignBornPopulationEstimate";
+var chosenYAxis = "checkupNever";
 
 var svgWidth = 600;
 var svgHeight = 400;
@@ -25,7 +26,7 @@ var svg = d3.select("body")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// function used for updating x-scale var upon click on axis label
+// functions used for updating x- and y-scales var upon click on axis label
 function xScale(data, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
@@ -34,8 +35,16 @@ function xScale(data, chosenXAxis) {
   return xLinearScale;
 };
 
+function yScale(data, chosenYAxis) {
+  // create scales
+  var yLinearScale = d3.scaleLinear()
+    .domain([d3.max(data, d => d[chosenYAxis]) * 1.2,d3.min(data, d => d[chosenYAxis]) * 0.8])
+    .range([0, height]);
+  return yLinearScale;
+};
+
 // function used for updating xAxis var upon click on axis label
-function renderAxes(newXScale, xAxis) {
+function renderXAxis(newXScale, xAxis) {
   var bottomAxis = d3.axisBottom(newXScale);
 
   xAxis.transition()
@@ -45,13 +54,29 @@ function renderAxes(newXScale, xAxis) {
   return xAxis;
 };
 
+function renderYAxis(newYScale, yAxis) {
+  var leftAxis = d3.axisLeft(newYScale);
+
+  yAxis.transition()
+    .duration(1000)
+    .call(leftAxis);
+
+  return yAxis;
+};
+
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circle, newXScale, chosenXaxis) {
+function renderCircles(circle, newXScale, chosenXaxis, chosenYAxis) {
 
   circle.transition()
     .duration(1000)
-    .attr("cx", d => newXScale(d[chosenXaxis]));
+    .attr('transform', function(d, i) {
+      return "translate("
+        + newXScale(d[chosenXaxis])
+        + ","
+        + d[chosenYAxis]
+        + ")"
+    })
 
   return circle;
 };
@@ -75,9 +100,7 @@ d3.csv("resources/data.csv", function (err, data) {
   var xLinearScale = xScale(data, chosenXAxis);
 
   // crete y scale function
-  var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.checkupNever)])
-    .range([height, 0]);
+  var yLinearScale = yScale(data, chosenYAxis);;
 
   // Create initial axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
@@ -90,7 +113,9 @@ d3.csv("resources/data.csv", function (err, data) {
     .call(bottomAxis);
 
   // append y axis
-  chartGroup.append("g")
+  var yAxis = chartGroup.append("g")
+    .classed("y-axis", true)
+    // .attr("transform", `translate(${height})`)
     .call(leftAxis);
 
   // append initial circles
@@ -152,17 +177,17 @@ d3.csv("resources/data.csv", function (err, data) {
         // replaces chosenXAxis with value
         chosenXAxis = value;
 
-        // console.log(chosenXAxis)
-
         // functions here found above csv import
         // updates x scale for new data
         xLinearScale = xScale(data, chosenXAxis);
+        yLinearScale = yScale(data, chosenYAxis);
 
         // updates x axis with transition
-        xAxis = renderAxes(xLinearScale, xAxis);
+        xAxis = renderXAxis(xLinearScale, xAxis);
+        yAxis = renderYAxis(yLinearScale, yAxis);
 
         // updates circles with new x values
-        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+        circle = renderCircles(circle, xLinearScale, chosenXAxis, chosenYAxis);
 
         // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
