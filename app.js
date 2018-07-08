@@ -7,9 +7,9 @@ var svgHeight = 400;
 
 var margin = {
   top: 20,
-  right: 40,
-  bottom: 60,
-  left: 20
+  right: 20,
+  bottom: 100,
+  left: 100
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -26,7 +26,7 @@ var svg = d3.select("body")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// functions used for updating x- and y-scales var upon click on axis label
+// functions used for updating x- and y-scales var upon click on axes labels
 function xScale(data, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
@@ -43,24 +43,20 @@ function yScale(data, chosenYAxis) {
   return yLinearScale;
 };
 
-// function used for updating xAxis var upon click on axis label
+// function used for updating axes var upon click on axes label
 function renderXAxis(newXScale, xAxis) {
   var bottomAxis = d3.axisBottom(newXScale);
-
   xAxis.transition()
     .duration(1000)
     .call(bottomAxis);
-
   return xAxis;
 };
 
 function renderYAxis(newYScale, yAxis) {
   var leftAxis = d3.axisLeft(newYScale);
-
   yAxis.transition()
     .duration(1000)
     .call(leftAxis);
-
   return yAxis;
 };
 
@@ -99,7 +95,7 @@ d3.csv("resources/data.csv", function (err, data) {
   // xLinearScale function above csv import
   var xLinearScale = xScale(data, chosenXAxis);
 
-  // crete y scale function
+  // create y scale function
   var yLinearScale = yScale(data, chosenYAxis);;
 
   // Create initial axis functions
@@ -141,6 +137,11 @@ d3.csv("resources/data.csv", function (err, data) {
       .text(function(d) { return d.abbr; });
 
   // Create group for  2 x- axis labels
+  // var xLabels = {
+  //   checkupNever: "Never done checkup",
+  //   foreignBornPopulationEstimate: "Foreign Born Population Estimate"
+  // };
+
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
