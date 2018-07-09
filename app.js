@@ -111,7 +111,6 @@ d3.csv("resources/data.csv", function (err, data) {
   // append y axis
   var yAxis = chartGroup.append("g")
     .classed("y-axis", true)
-    // .attr("transform", `translate(${height})`)
     .call(leftAxis);
 
   // append initial circles
@@ -142,22 +141,29 @@ d3.csv("resources/data.csv", function (err, data) {
   //   foreignBornPopulationEstimate: "Foreign Born Population Estimate"
   // };
 
-  var labelsGroup = chartGroup.append("g")
+  var xLabels = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-  var foreignBornPopulationEstimateLabel = labelsGroup.append("text")
+  var xLabel1 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 20)
     .attr("value", "foreignBornPopulationEstimate") // value to grab for event listener
     .classed("active", true)
     .text("Foreign Born Population Estimate");
 
-  var moreThenFiveLabel = labelsGroup.append("text")
+  var xLabel2 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "moreThenFive") // value to grab for event listener
     .classed("inactive", true)
     .text("More Then Five");
+
+  var xLabel3 = xLabels.append("text")
+    .attr("x", 0)
+    .attr("y", 60)
+    .attr("value", "withinFive") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Within Five");
 
   // Append y axis
   chartGroup.append("text")
@@ -169,7 +175,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .text("checkupNever");
 
   // x axis labels event listener
-  labelsGroup.selectAll("text")
+  xLabels.selectAll("text")
     .on("click", function () {
       // get value of selection
       var value = d3.select(this).attr("value");
@@ -193,20 +199,36 @@ d3.csv("resources/data.csv", function (err, data) {
         // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
-        // changes classes to change bold text
-        if (chosenXAxis == "moreThenFive") {
-          moreThenFiveLabel
+        // changes classes to highlight chosen axis
+        if (chosenXAxis == "foreignBornPopulationEstimate") {
+          xLabel1
             .classed("active", true)
             .classed("inactive", false);
-          foreignBornPopulationEstimateLabel
+          xLabel2
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel3
+            .classed("active", false)
+            .classed("inactive", true)}
+        else if (chosenXAxis == "moreThenFive") {
+          xLabel1
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel2
+            .classed("active", true)
+            .classed("inactive", false);
+          xLabel3
             .classed("active", false)
             .classed("inactive", true);
         }
         else {
-          moreThenFiveLabel
+          xLabel1
             .classed("active", false)
             .classed("inactive", true);
-          foreignBornPopulationEstimateLabel
+          xLabel2
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel3
             .classed("active", true)
             .classed("inactive", false);
         }
