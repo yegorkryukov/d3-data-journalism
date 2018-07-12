@@ -62,7 +62,7 @@ function renderYAxis(newYScale, yAxis) {
 
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circle, newXScale, chosenXaxis, chosenYAxis) {
+function renderCircles(circle, newXScale, chosenXaxis, newYScale, chosenYAxis) {
 
   circle.transition()
     .duration(1000)
@@ -70,7 +70,7 @@ function renderCircles(circle, newXScale, chosenXaxis, chosenYAxis) {
       return "translate("
         + newXScale(d[chosenXaxis])
         + ","
-        + d[chosenYAxis]
+        + newYScale(d[chosenYAxis])
         + ")"
     })
 
@@ -80,7 +80,7 @@ function renderCircles(circle, newXScale, chosenXaxis, chosenYAxis) {
 // Retrieve data from the CSV file and execute everything below
 d3.csv("resources/data.csv", function (err, data) {
   if (err) throw err;
-  // console.log(data.abbr);
+  console.log(data);
 
   // Parse Data
   data.forEach(function (d) {
@@ -89,7 +89,7 @@ d3.csv("resources/data.csv", function (err, data) {
     d.moreThenFive = +d.moreThenFive;
     d.withinFive = +d.withinFive;
     d.withinTwo = +d.withinTwo;
-    d.withinOne = +d.withinOne
+    d.withinOne = +d.withinOne;
   });
 
   // xLinearScale function above csv import
@@ -121,7 +121,7 @@ d3.csv("resources/data.csv", function (err, data) {
         return "translate("
           + xLinearScale(d[chosenXAxis])
           + "," 
-          + yLinearScale(d.checkupNever)
+          + yLinearScale(d[chosenYAxis])
           + ")"
       })
       
@@ -166,13 +166,32 @@ d3.csv("resources/data.csv", function (err, data) {
     .text("Within Five");
 
   // Append y axis
-  chartGroup.append("text")
+  var yLabels = chartGroup.append("g")
+    .attr("transform", `translate(0, ${height / 2})`);
+
+  var yLabel1 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left + 40)
-    .attr("x", 0 - (height / 2))
-    .attr("dy", "1em")
-    .attr("class", "axisText")
-    .text("checkupNever");
+    .attr("x", 0)
+    .attr("dy", "-40")
+    .attr("value", "checkupNever") // value to grab for event listener
+    .classed("active", true)
+    .text("Never CheckedUp");
+
+  var yLabel2 = yLabels.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", 0)
+    .attr("y", -60)
+    .attr("value", "withinTwo") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Within Two Years");
+
+  var yLabel3 = yLabels.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", 0)
+    .attr("y", -80)
+    .attr("value", "withinOne") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Within One Year");
 
   // x axis labels event listener
   xLabels.selectAll("text")
@@ -184,7 +203,6 @@ d3.csv("resources/data.csv", function (err, data) {
         // replaces chosenXAxis with value
         chosenXAxis = value;
 
-        // functions here found above csv import
         // updates x scale for new data
         xLinearScale = xScale(data, chosenXAxis);
         yLinearScale = yScale(data, chosenYAxis);
@@ -194,7 +212,67 @@ d3.csv("resources/data.csv", function (err, data) {
         yAxis = renderYAxis(yLinearScale, yAxis);
 
         // updates circles with new x values
-        circle = renderCircles(circle, xLinearScale, chosenXAxis, chosenYAxis);
+        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale,chosenYAxis);
+
+        // updates tooltips with new info
+        // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
+        // changes classes to highlight chosen axis
+        if (chosenXAxis == "foreignBornPopulationEstimate") {
+          xLabel1
+            .classed("active", true)
+            .classed("inactive", false);
+          xLabel2
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel3
+            .classed("active", false)
+            .classed("inactive", true)}
+        else if (chosenXAxis == "moreThenFive") {
+          xLabel1
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel2
+            .classed("active", true)
+            .classed("inactive", false);
+          xLabel3
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+        else {
+          xLabel1
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel2
+            .classed("active", false)
+            .classed("inactive", true);
+          xLabel3
+            .classed("active", true)
+            .classed("inactive", false);
+        }
+      }
+    });
+
+    //y axes event listener
+    yLabels.selectAll("text")
+    .on("click", function () {
+      // get value of selection
+      var value = d3.select(this).attr("value");
+      if (value != chosenYAxis) {
+
+        // replaces chosenXAxis with value
+        chosenYAxis = value;
+
+        // updates x scale for new data
+        xLinearScale = xScale(data, chosenXAxis);
+        yLinearScale = yScale(data, chosenYAxis);
+
+        // updates x axis with transition
+        xAxis = renderXAxis(xLinearScale, xAxis);
+        yAxis = renderYAxis(yLinearScale, yAxis);
+
+        // updates circles with new x values
+        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale,chosenYAxis);
 
         // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
