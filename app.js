@@ -38,7 +38,7 @@ function xScale(data, chosenXAxis) {
 function yScale(data, chosenYAxis) {
   // create scales
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.max(data, d => d[chosenYAxis]) * 1.2,d3.min(data, d => d[chosenYAxis]) * 0.8])
+    .domain([d3.max(data, d => d[chosenYAxis]) * 1.2, d3.min(data, d => d[chosenYAxis]) * 0.8])
     .range([0, height]);
   return yLinearScale;
 };
@@ -66,7 +66,7 @@ function renderCircles(circle, newXScale, chosenXaxis, newYScale, chosenYAxis) {
 
   circle.transition()
     .duration(1000)
-    .attr('transform', function(d, i) {
+    .attr('transform', function (d, i) {
       return "translate("
         + newXScale(d[chosenXaxis])
         + ","
@@ -106,34 +106,37 @@ d3.csv("resources/data.csv", function (err, data) {
   var xAxis = chartGroup.append("g")
     .classed("x-axis", true)
     .attr("transform", `translate(0, ${height})`)
+    .attr("class", "axisC")
     .call(bottomAxis);
 
   // append y axis
   var yAxis = chartGroup.append("g")
     .classed("y-axis", true)
+    .attr("class", "axisC")
     .call(leftAxis);
 
   // append initial circles
   var circle = chartGroup.selectAll("g")
-      .data(data)
+    .data(data)
     .enter().append("g")
-      .attr('transform', function(d, i) {
-        return "translate("
-          + xLinearScale(d[chosenXAxis])
-          + "," 
-          + yLinearScale(d[chosenYAxis])
-          + ")"
-      })
-      
+    .attr('transform', function (d, i) {
+      return "translate("
+        + xLinearScale(d[chosenXAxis])
+        + ","
+        + yLinearScale(d[chosenYAxis])
+        + ")"
+    })
+
   circle.append("circle")
     .attr("r", "16")
     .attr("fill", "steelblue")
     .attr("opacity", ".5");
 
   circle.append("text")
-      .attr("dy", ".35em")
-      .attr("dx", "-12")
-      .text(function(d) { return d.abbr; });
+    .attr("dy", ".35em")
+    .attr("dx", "-11")
+    .classed("state-text",true)
+    .text(function (d) { return d.abbr; });
 
   // Create group for  2 x- axis labels
   // var xLabels = {
@@ -212,7 +215,7 @@ d3.csv("resources/data.csv", function (err, data) {
         yAxis = renderYAxis(yLinearScale, yAxis);
 
         // updates circles with new x values
-        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale,chosenYAxis);
+        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
@@ -227,7 +230,8 @@ d3.csv("resources/data.csv", function (err, data) {
             .classed("inactive", true);
           xLabel3
             .classed("active", false)
-            .classed("inactive", true)}
+            .classed("inactive", true)
+        }
         else if (chosenXAxis == "moreThenFive") {
           xLabel1
             .classed("active", false)
@@ -253,8 +257,8 @@ d3.csv("resources/data.csv", function (err, data) {
       }
     });
 
-    //y axes event listener
-    yLabels.selectAll("text")
+  //y axes event listener
+  yLabels.selectAll("text")
     .on("click", function () {
       // get value of selection
       var value = d3.select(this).attr("value");
@@ -272,41 +276,42 @@ d3.csv("resources/data.csv", function (err, data) {
         yAxis = renderYAxis(yLinearScale, yAxis);
 
         // updates circles with new x values
-        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale,chosenYAxis);
+        circle = renderCircles(circle, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to highlight chosen axis
-        if (chosenXAxis == "foreignBornPopulationEstimate") {
-          xLabel1
+        if (chosenYAxis == "checkupNever") {
+          yLabel1
             .classed("active", true)
             .classed("inactive", false);
-          xLabel2
+          yLabel2
             .classed("active", false)
             .classed("inactive", true);
-          xLabel3
+          yLabel3
             .classed("active", false)
-            .classed("inactive", true)}
-        else if (chosenXAxis == "moreThenFive") {
-          xLabel1
+            .classed("inactive", true)
+        }
+        else if (chosenYAxis == "withinTwo") {
+          yLabel1
             .classed("active", false)
             .classed("inactive", true);
-          xLabel2
+          yLabel2
             .classed("active", true)
             .classed("inactive", false);
-          xLabel3
+          yLabel3
             .classed("active", false)
             .classed("inactive", true);
         }
         else {
-          xLabel1
+          yLabel1
             .classed("active", false)
             .classed("inactive", true);
-          xLabel2
+          yLabel2
             .classed("active", false)
             .classed("inactive", true);
-          xLabel3
+          yLabel3
             .classed("active", true)
             .classed("inactive", false);
         }

@@ -39,10 +39,13 @@
   text-anchor: middle;
 }
 
+.state-text {
+  fill: white;
+}
+
 .active {
   font-weight: normal;
-  fill: #000;
-  fill: #551aaf;
+  fill: #4667b4;
   transition: fill 0.3s ease-out;
   text-anchor: middle;
 }
@@ -55,6 +58,18 @@
 }
 
 .inactive:hover {
-  fill: #e75480;
+  fill: #54b1e7;
   cursor: pointer;
 }
+
+.axisC line{
+  stroke: steelblue;
+}
+
+.axisC path{
+  stroke: steelblue;
+}
+
+.axisC text{
+  fill: steelblue;
+} 
