@@ -116,6 +116,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .call(leftAxis);
 
   // append initial circles
+  // append g group that would hold the circles and labels
   var circle = chartGroup.selectAll("g")
     .data(data)
     .enter().append("g")
@@ -127,23 +128,20 @@ d3.csv("resources/data.csv", function (err, data) {
         + ")"
     })
 
+  // append circles
   circle.append("circle")
     .attr("r", "16")
     .attr("fill", "steelblue")
     .attr("opacity", ".5");
 
+  // append text labels to circles
   circle.append("text")
     .attr("dy", ".35em")
     .attr("dx", "-11")
     .classed("state-text",true)
     .text(function (d) { return d.abbr; });
 
-  // Create group for  2 x- axis labels
-  // var xLabels = {
-  //   checkupNever: "Never done checkup",
-  //   foreignBornPopulationEstimate: "Foreign Born Population Estimate"
-  // };
-
+  // add labels for x axes
   var xLabels = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
@@ -168,7 +166,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .classed("inactive", true)
     .text("Within Five");
 
-  // Append y axis
+  // add labels for y axes
   var yLabels = chartGroup.append("g")
     .attr("transform", `translate(0, ${height / 2})`);
 
