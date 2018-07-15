@@ -2,25 +2,33 @@
 var chosenXAxis = "foreignBornPopulationEstimate";
 var chosenYAxis = "checkupNever";
 
-var svgWidth = 600;
-var svgHeight = 400;
+// var svgWidth = 600;
+// var svgHeight = 400;
 
-var margin = {
-  top: 20,
-  right: 20,
-  bottom: 100,
-  left: 100
-};
+// var margin = {
+//   top: 20,
+//   right: 20,
+//   bottom: 100,
+//   left: 100
+// };
 
-var width = svgWidth - margin.left - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
+var margin = {top: 30, right: 10, bottom: 100, left: 100}
+  , width = parseInt(d3.select('body').style('width'), 10)
+  , width = width - margin.left - margin.right
+  , chartRatio = .5
+  , height = width * chartRatio
+  , percent = d3.format('%');
+
+// var width = svgWidth - margin.left - margin.right;
+// var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold the chart, and shift the latter by left and top margins.
 var svg = d3.select("body")
   .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight)
-  .attr("class", "container mx-auto");
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  // .append("g")
+  //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Append an SVG group
 var chartGroup = svg.append("g")
