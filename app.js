@@ -1,26 +1,12 @@
 // Initial Params
-var chosenXAxis = "foreignBornPopulationEstimate";
-var chosenYAxis = "checkupNever";
-
-// var svgWidth = 600;
-// var svgHeight = 400;
-
-// var margin = {
-//   top: 20,
-//   right: 20,
-//   bottom: 100,
-//   left: 100
-// };
+var chosenXAxis = "blue_collar";
+var chosenYAxis = "depression";
 
 var margin = {top: 30, right: 10, bottom: 100, left: 100}
   , width = parseInt(d3.select('body').style('width'), 10)
   , width = width - margin.left - margin.right
   , chartRatio = .5
-  , height = width * chartRatio
-  , percent = d3.format('%');
-
-// var width = svgWidth - margin.left - margin.right;
-// var height = svgHeight - margin.top - margin.bottom;
+  , height = width * chartRatio;
 
 // Create an SVG wrapper, append an SVG group that will hold the chart, and shift the latter by left and top margins.
 var svg = d3.select("body")
@@ -92,12 +78,12 @@ d3.csv("resources/data.csv", function (err, data) {
 
   // Parse Data
   data.forEach(function (d) {
-    d.foreignBornPopulationEstimate = +d.foreignBornPopulationEstimate;
-    d.checkupNever = +d.checkupNever;
-    d.moreThenFive = +d.moreThenFive;
-    d.withinFive = +d.withinFive;
-    d.withinTwo = +d.withinTwo;
-    d.withinOne = +d.withinOne;
+    d.blue_collar = +d.blue_collar;
+    d.depression = +d.depression;
+    d.service_sales = +d.service_sales;
+    d.management = +d.management;
+    d.skin_canser = +d.skin_canser;
+    d.kidney_disease = +d.kidney_disease;
   });
 
   // xLinearScale function above csv import
@@ -156,23 +142,23 @@ d3.csv("resources/data.csv", function (err, data) {
   var xLabel1 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 20)
-    .attr("value", "foreignBornPopulationEstimate") // value to grab for event listener
+    .attr("value", "blue_collar") // value to grab for event listener
     .classed("active", true)
-    .text("Foreign Born Population Estimate");
+    .text("Construction and Transportation");
 
   var xLabel2 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 40)
-    .attr("value", "moreThenFive") // value to grab for event listener
+    .attr("value", "service_sales") // value to grab for event listener
     .classed("inactive", true)
-    .text("More Then Five");
+    .text("Service, Sales and Office");
 
   var xLabel3 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 60)
-    .attr("value", "withinFive") // value to grab for event listener
+    .attr("value", "management") // value to grab for event listener
     .classed("inactive", true)
-    .text("Within Five");
+    .text("Management, business, science, and arts");
 
   // add labels for y axes
   var yLabels = chartGroup.append("g")
@@ -182,25 +168,25 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", 0)
     .attr("dy", "-40")
-    .attr("value", "checkupNever") // value to grab for event listener
+    .attr("value", "depression") // value to grab for event listener
     .classed("active", true)
-    .text("Never CheckedUp");
+    .text("Depression");
 
   var yLabel2 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", 0)
     .attr("y", -60)
-    .attr("value", "withinTwo") // value to grab for event listener
+    .attr("value", "skin_canser") // value to grab for event listener
     .classed("inactive", true)
-    .text("Within Two Years");
+    .text("Skin Cancer");
 
   var yLabel3 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", 0)
     .attr("y", -80)
-    .attr("value", "withinOne") // value to grab for event listener
+    .attr("value", "kidney_disease") // value to grab for event listener
     .classed("inactive", true)
-    .text("Within One Year");
+    .text("Kidney Disease");
 
   // x axis labels event listener
   xLabels.selectAll("text")
@@ -227,7 +213,7 @@ d3.csv("resources/data.csv", function (err, data) {
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to highlight chosen axis
-        if (chosenXAxis == "foreignBornPopulationEstimate") {
+        if (chosenXAxis == "blue_collar") {
           xLabel1
             .classed("active", true)
             .classed("inactive", false);
@@ -238,7 +224,7 @@ d3.csv("resources/data.csv", function (err, data) {
             .classed("active", false)
             .classed("inactive", true)
         }
-        else if (chosenXAxis == "moreThenFive") {
+        else if (chosenXAxis == "service_sales") {
           xLabel1
             .classed("active", false)
             .classed("inactive", true);
@@ -288,7 +274,7 @@ d3.csv("resources/data.csv", function (err, data) {
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to highlight chosen axis
-        if (chosenYAxis == "checkupNever") {
+        if (chosenYAxis == "depression") {
           yLabel1
             .classed("active", true)
             .classed("inactive", false);
@@ -299,7 +285,7 @@ d3.csv("resources/data.csv", function (err, data) {
             .classed("active", false)
             .classed("inactive", true)
         }
-        else if (chosenYAxis == "withinTwo") {
+        else if (chosenYAxis == "skin_canser") {
           yLabel1
             .classed("active", false)
             .classed("inactive", true);
