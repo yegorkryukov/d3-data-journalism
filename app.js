@@ -1,4 +1,13 @@
 // Initial Params
+var dataLabels = {
+  'blue_collar':'Construction and Transportation',
+  'service_sales':'Service, Sales and Office',
+  'management': 'Management, business, science, and arts',
+  'depression':'Depression',
+  'skin_canser':'Skin Canser',
+  'kidney_disease':'Kidney Disease'
+};
+
 var chosenXAxis = "blue_collar";
 var chosenYAxis = "depression";
 
@@ -56,13 +65,13 @@ function renderYAxis(newYScale, yAxis) {
 
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circle, newXScale, chosenXaxis, newYScale, chosenYAxis) {
+function renderCircles(circle, newXScale, chosenXAxis, newYScale, chosenYAxis) {
 
   circle.transition()
     .duration(1000)
     .attr('transform', function (d, i) {
       return "translate("
-        + newXScale(d[chosenXaxis])
+        + newXScale(d[chosenXAxis])
         + ","
         + newYScale(d[chosenYAxis])
         + ")"
@@ -109,6 +118,19 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("class", "axisC")
     .call(leftAxis);
 
+  // instantiate tooltip object
+  var tool_tip = d3.tip()
+    .attr("class", "d3-tip")
+    .offset([-8, 0])
+    .html(function(d) { 
+      return `<strong>${d.state}</strong>`
+      +'<br>'
+      +`${dataLabels[chosenXAxis]}: ${d[chosenXAxis]}`
+      +'<br>'
+      +`${dataLabels[chosenYAxis]}: ${d[chosenYAxis]}`
+    });
+  svg.call(tool_tip);
+
   // append initial circles
   // append g group that would hold the circles and labels
   var circle = chartGroup.selectAll("g")
@@ -121,6 +143,8 @@ d3.csv("resources/data.csv", function (err, data) {
         + yLinearScale(d[chosenYAxis])
         + ")"
     })
+    .on('mouseover', tool_tip.show)
+    .on('mouseout', tool_tip.hide);
 
   // append circles
   circle.append("circle")
@@ -135,6 +159,8 @@ d3.csv("resources/data.csv", function (err, data) {
     .classed("state-text",true)
     .text(function (d) { return d.abbr; });
 
+  
+  
   // add labels for x axes
   var xLabels = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
@@ -144,21 +170,21 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("y", 20)
     .attr("value", "blue_collar") // value to grab for event listener
     .classed("active", true)
-    .text("Construction and Transportation");
+    .text(dataLabels['blue_collar']);
 
   var xLabel2 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "service_sales") // value to grab for event listener
     .classed("inactive", true)
-    .text("Service, Sales and Office");
+    .text(dataLabels['service_sales']);
 
   var xLabel3 = xLabels.append("text")
     .attr("x", 0)
     .attr("y", 60)
     .attr("value", "management") // value to grab for event listener
     .classed("inactive", true)
-    .text("Management, business, science, and arts");
+    .text(dataLabels['management']);
 
   // add labels for y axes
   var yLabels = chartGroup.append("g")
@@ -170,7 +196,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("dy", "-40")
     .attr("value", "depression") // value to grab for event listener
     .classed("active", true)
-    .text("Depression");
+    .text(dataLabels['depression']);
 
   var yLabel2 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
@@ -178,7 +204,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("y", -60)
     .attr("value", "skin_canser") // value to grab for event listener
     .classed("inactive", true)
-    .text("Skin Cancer");
+    .text(dataLabels['skin_canser']);
 
   var yLabel3 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
@@ -186,7 +212,7 @@ d3.csv("resources/data.csv", function (err, data) {
     .attr("y", -80)
     .attr("value", "kidney_disease") // value to grab for event listener
     .classed("inactive", true)
-    .text("Kidney Disease");
+    .text(dataLabels['kidney_disease']);
 
   // x axis labels event listener
   xLabels.selectAll("text")
