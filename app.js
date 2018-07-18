@@ -22,8 +22,6 @@ var svg = d3.select("body")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  // .append("g")
-  //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Append an SVG group
 var chartGroup = svg.append("g")
@@ -33,7 +31,7 @@ var chartGroup = svg.append("g")
 function xScale(data, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenXAxis]) * 0.8, d3.max(data, d => d[chosenXAxis]) * 1.2])
+    .domain([d3.min(data, d => d[chosenXAxis]), d3.max(data, d => d[chosenXAxis])])
     .range([0, width]);
   return xLinearScale;
 };
@@ -41,7 +39,7 @@ function xScale(data, chosenXAxis) {
 function yScale(data, chosenYAxis) {
   // create scales
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.max(data, d => d[chosenYAxis]) * 1.2, d3.min(data, d => d[chosenYAxis]) * 0.8])
+    .domain([d3.max(data, d => d[chosenYAxis]), d3.min(data, d => d[chosenYAxis])])
     .range([0, height]);
   return yLinearScale;
 };
@@ -81,9 +79,9 @@ function renderCircles(circle, newXScale, chosenXAxis, newYScale, chosenYAxis) {
 };
 
 // Retrieve data from the CSV file and execute everything below
-d3.csv("resources/data.csv", function (err, data) {
+d3.csv("resources/data2.csv", function (err, data) {
   if (err) throw err;
-  console.log(data);
+  // console.log(data);
 
   // Parse Data
   data.forEach(function (d) {
@@ -93,6 +91,7 @@ d3.csv("resources/data.csv", function (err, data) {
     d.management = +d.management;
     d.skin_canser = +d.skin_canser;
     d.kidney_disease = +d.kidney_disease;
+    // console.log(d[chosenXAxis])
   });
 
   // xLinearScale function above csv import
@@ -129,14 +128,14 @@ d3.csv("resources/data.csv", function (err, data) {
       +'<br>'
       +`${dataLabels[chosenYAxis]}: ${d[chosenYAxis]}`
     });
-  svg.call(tool_tip);
+  chartGroup.call(tool_tip);
 
   // append initial circles
   // append g group that would hold the circles and labels
   var circle = chartGroup.selectAll("g")
     .data(data)
     .enter().append("g")
-    .attr('transform', function (d, i) {
+    .attr('transform', function (d) {
       return "translate("
         + xLinearScale(d[chosenXAxis])
         + ","
@@ -159,8 +158,6 @@ d3.csv("resources/data.csv", function (err, data) {
     .classed("state-text",true)
     .text(function (d) { return d.abbr; });
 
-  
-  
   // add labels for x axes
   var xLabels = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
