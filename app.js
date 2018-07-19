@@ -11,7 +11,7 @@ var dataLabels = {
 var chosenXAxis = "blue_collar";
 var chosenYAxis = "depression";
 
-var margin = {top: 30, right: 10, bottom: 100, left: 100}
+var margin = {top: 30, right: 30, bottom: 100, left: 100}
   , width = parseInt(d3.select('body').style('width'), 10)
   , width = width - margin.left - margin.right
   , chartRatio = .5
@@ -31,7 +31,8 @@ var chartGroup = svg.append("g")
 function xScale(data, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenXAxis]), d3.max(data, d => d[chosenXAxis])])
+    .domain([d3.min(data, d => d[chosenXAxis])*0.8, 
+    d3.max(data, d => d[chosenXAxis])*1.1])
     .range([0, width]);
   return xLinearScale;
 };
