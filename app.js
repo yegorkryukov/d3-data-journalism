@@ -11,7 +11,7 @@ var dataLabels = {
 var chosenXAxis = "blue_collar";
 var chosenYAxis = "depression";
 
-var margin = {top: 30, right: 30, bottom: 100, left: 100}
+var margin = {top: 60, right: 30, bottom: 100, left: 100}
   , width = parseInt(d3.select('body').style('width'), 10)
   , width = width - margin.left - margin.right
   , chartRatio = .5
