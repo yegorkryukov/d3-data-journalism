@@ -4,7 +4,7 @@ var dataLabels = {
   'service_sales':'Service, Sales and Office',
   'management': 'Management, business, science, and arts',
   'depression':'Depression',
-  'skin_canser':'Skin Canser',
+  'skin_cancer':'Skin Cancer',
   'kidney_disease':'Kidney Disease'
 };
 
@@ -90,7 +90,7 @@ d3.csv("resources/data2.csv", function (err, data) {
     d.depression = +d.depression;
     d.service_sales = +d.service_sales;
     d.management = +d.management;
-    d.skin_canser = +d.skin_canser;
+    d.skin_cancer = +d.skin_cancer;
     d.kidney_disease = +d.kidney_disease;
     // console.log(d[chosenXAxis])
   });
@@ -200,9 +200,9 @@ d3.csv("resources/data2.csv", function (err, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", 0)
     .attr("y", -60)
-    .attr("value", "skin_canser") // value to grab for event listener
+    .attr("value", "skin_cancer") // value to grab for event listener
     .classed("inactive", true)
-    .text(dataLabels['skin_canser']);
+    .text(dataLabels['skin_cancer']);
 
   var yLabel3 = yLabels.append("text")
     .attr("transform", "rotate(-90)")
@@ -309,7 +309,7 @@ d3.csv("resources/data2.csv", function (err, data) {
             .classed("active", false)
             .classed("inactive", true)
         }
-        else if (chosenYAxis == "skin_canser") {
+        else if (chosenYAxis == "skin_cancer") {
           yLabel1
             .classed("active", false)
             .classed("inactive", true);
